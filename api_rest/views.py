@@ -13,3 +13,13 @@ def get_users(request):
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
     return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def get_user_by_nickname(request, nickname):
+    try:
+        user = User.objects.get(user_nickname=nickname)
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'GET':
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
