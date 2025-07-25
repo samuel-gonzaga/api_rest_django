@@ -23,3 +23,12 @@ def get_user_by_nickname(request, nickname):
     if request.method == 'GET':
         serializer = UserSerializer(user)
         return Response(serializer.data)
+
+@api_view(['POST'])
+def create_user(request):
+    if request.method == 'POST':
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
