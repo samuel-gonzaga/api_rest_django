@@ -40,11 +40,16 @@ def update_user(request, nickname):
     except User.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    serializer = UserSerializer(user, data=request.data)
+    # Garante que a chave primária não vai ser alterada
+    data = request.data.copy()
+    data['user_nickname'] = nickname
+
+    serializer = UserSerializer(user, data=data)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['DELETE'])
 def delete_user(request, nickname):
